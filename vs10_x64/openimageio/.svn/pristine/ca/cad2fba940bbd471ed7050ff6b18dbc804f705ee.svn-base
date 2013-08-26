@@ -1,0 +1,88 @@
+@Echo off
+
+set LIBDIR=%CD%\..\..
+
+:: hack to get compatible EXR headers
+set EXRINC=%LIBDIR%\openexr\include
+mkdir %LIBDIR%\openexr\include\OpenEXR
+xcopy /E /Y %EXRINC%\Iex %EXRINC%\OpenEXR\
+xcopy /E /Y %EXRINC%\IlmImf %EXRINC%\OpenEXR\
+xcopy /E /Y %EXRINC%\Imath %EXRINC%\OpenEXR\
+xcopy /E /Y %EXRINC%\IlmThread %EXRINC%\OpenEXR\
+xcopy /Y %EXRINC%\half.h %EXRINC%\OpenEXR\
+xcopy /Y %EXRINC%\halfFunction.h %EXRINC%\OpenEXR\
+xcopy /Y %EXRINC%\halfLimits.h %EXRINC%\OpenEXR\
+xcopy /Y %EXRINC%\IlmBaseConfig.h %EXRINC%\OpenEXR\
+
+:: create build directory
+mkdir build\windows
+cd build\windows
+
+cmake -G "NMake Makefiles" ..\..\src ^
+ -DCMAKE_INSTALL_PREFIX=%LIBDIR%\openimageio\release ^
+ -DILMBASE_INCLUDE_DIR=%LIBDIR%\openexr\include ^
+ -DILMBASE_HALF_LIBRARIES=%LIBDIR%\openexr\lib_vs2008\Half.lib ^
+ -DILMBASE_IMATH_LIBRARIES=%LIBDIR%\openexr\lib_vs2008\Imath.lib ^
+ -DILMBASE_ILMTHREAD_LIBRARIES=%LIBDIR%\openexr\lib_vs2008\IlmThread.lib ^
+ -DILMBASE_IEX_LIBRARIES=%LIBDIR%\openexr\lib_vs2008\Iex.lib ^
+ -DOPENEXR_INCLUDE_DIR=%LIBDIR%\openexr\include ^
+ -DOPENEXR_ILMIMF_LIBRARIES=%LIBDIR%\openexr\lib_vs2008\IlmImf.lib ^
+ -DLINKSTATIC=ON ^
+ -DBOOST_ROOT=%LIBDIR%\boost ^
+ -DBoost_USE_STATIC_RUNTIME=ON ^
+ -DZLIB_INCLUDE_DIR=%LIBDIR%\zlib\include ^
+ -DZLIB_LIBRARY=%LIBDIR%\zlib\lib\libz.lib ^
+ -DPNG_PNG_INCLUDE_DIR=%LIBDIR%\png\include ^
+ -DPNG_LIBRARY=%LIBDIR%\png\lib\libpng.lib ^
+ -DJPEG_INCLUDE_DIR=%LIBDIR%\jpeg\include ^
+ -DJPEG_LIBRARY=%LIBDIR%\jpeg\lib\libjpeg.lib ^
+ -DTIFF_INCLUDE_DIR=%LIBDIR%\tiff\include ^
+ -DTIFF_LIBRARY=%LIBDIR%\tiff\lib\libtiff.lib ^
+ -DUSE_OPENGL=OFF ^
+ -DUSE_TBB=OFF ^
+ -DUSE_FIELD3D=OFF ^
+ -DUSE_QT=OFF ^
+ -DUSE_PYTHON=OFF ^
+ -DCMAKE_BUILD_TYPE=Release
+
+nmake
+nmake install
+
+cd ..\..
+
+:: create build directory
+mkdir build\windows_debug
+cd build\windows_debug
+
+cmake -G "NMake Makefiles" ..\..\src ^
+ -DCMAKE_INSTALL_PREFIX=%LIBDIR%\openimageio\debug ^
+ -DILMBASE_INCLUDE_DIR=%LIBDIR%\openexr\include ^
+ -DILMBASE_HALF_LIBRARIES=%LIBDIR%\openexr\lib_vs2008\Half_d.lib ^
+ -DILMBASE_IMATH_LIBRARIES=%LIBDIR%\openexr\lib_vs2008\Imath_d.lib ^
+ -DILMBASE_ILMTHREAD_LIBRARIES=%LIBDIR%\openexr\lib_vs2008\IlmThread_d.lib ^
+ -DILMBASE_IEX_LIBRARIES=%LIBDIR%\openexr\lib_vs2008\Iex_d.lib ^
+ -DOPENEXR_INCLUDE_DIR=%LIBDIR%\openexr\include ^
+ -DOPENEXR_ILMIMF_LIBRARIES=%LIBDIR%\openexr\lib_vs2008\IlmImf_d.lib ^
+ -DLINKSTATIC=ON ^
+ -DBOOST_ROOT=%LIBDIR%\boost ^
+ -DBoost_USE_STATIC_RUNTIME=ON ^
+ -DZLIB_INCLUDE_DIR=%LIBDIR%\zlib\include ^
+ -DZLIB_LIBRARY=%LIBDIR%\zlib\lib\libz.lib ^
+ -DPNG_PNG_INCLUDE_DIR=%LIBDIR%\png\include ^
+ -DPNG_LIBRARY=%LIBDIR%\png\lib\libpng_st.lib ^
+ -DJPEG_INCLUDE_DIR=%LIBDIR%\jpeg\include ^
+ -DJPEG_LIBRARY=%LIBDIR%\jpeg\lib\libjpeg.lib ^
+ -DTIFF_INCLUDE_DIR=%LIBDIR%\tiff\include ^
+ -DTIFF_LIBRARY=%LIBDIR%\tiff\lib\libtiff.lib ^
+ -DUSE_OPENGL=OFF ^
+ -DUSE_TBB=OFF ^
+ -DUSE_FIELD3D=OFF ^
+ -DUSE_QT=OFF ^
+ -DUSE_PYTHON=OFF ^
+ -DCMAKE_BUILD_TYPE=Debug
+
+nmake
+nmake install
+
+cd ..\..
+

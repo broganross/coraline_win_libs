@@ -1,0 +1,133 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index f322e83..fdc1f70 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -116,20 +116,30 @@ if (MSVC)
+     if (BUILDSTATIC)
+          add_definitions(-DOIIO_STATIC_BUILD=1)
+     endif ()
++
++    set(CMAKE_C_FLAGS_DEBUG "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
++    set(CMAKE_C_FLAGS_MINSIZEREL     "/MT /O1 /Ob1 /D NDEBUG")
++    set(CMAKE_C_FLAGS_RELEASE        "/MT /O2 /Ob2 /D NDEBUG")
++    set(CMAKE_C_FLAGS_RELWITHDEBINFO "/MT /Zi /O2 /Ob1 /D NDEBUG")
++
++    set(CMAKE_CXX_FLAGS_DEBUG "/D_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
++    set(CMAKE_CXX_FLAGS_MINSIZEREL     "/MT /O1 /Ob1 /D NDEBUG")
++    set(CMAKE_CXX_FLAGS_RELEASE        "/MT /O2 /Ob2 /D NDEBUG")
++    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/MT /Zi /O2 /Ob1 /D NDEBUG")
+ endif (MSVC)
+ 
+ 
+ # Tell CMake to process the sub-directories
+ add_subdirectory (libOpenImageIO)
+ 
+-add_subdirectory (iconvert)
+-add_subdirectory (idiff)
+-add_subdirectory (igrep)
+-add_subdirectory (iinfo)
+-add_subdirectory (iprocess)
+-add_subdirectory (maketx)
+-add_subdirectory (testtex)
+-add_subdirectory (iv)
++#add_subdirectory (iconvert)
++#add_subdirectory (idiff)
++#add_subdirectory (igrep)
++#add_subdirectory (iinfo)
++#add_subdirectory (iprocess)
++#add_subdirectory (maketx)
++#add_subdirectory (testtex)
++#add_subdirectory (iv)
+ 
+ # Add IO plugin directories
+ if (NOT EMBEDPLUGINS)
+@@ -167,41 +177,41 @@ add_subdirectory (doc)
+ # Testing
+ 
+ # List all the individual testsuite tests here:
+-oiio_add_tests (ico gpsread sgi 
+-                texture-fill texture-gray texture-grid
+-                texture-missing texture-pointsample texture-res
+-                texture-skinny texture-fat
+-                imagecache-files texture-field3d)
++#oiio_add_tests (ico gpsread sgi 
++#                texture-fill texture-gray texture-grid
++#                texture-missing texture-pointsample texture-res
++#                texture-skinny texture-fat
++#                imagecache-files texture-field3d)
+ 
+ # List testsuites which need special external reference images from the web
+ # here:
+-oiio_add_tests (bmp
+-    IMAGEDIR bmpsuite
+-    URL http://entropymine.com/jason/bmpsuite/bmpsuite.zip)
++#oiio_add_tests (bmp
++#    IMAGEDIR bmpsuite
++#    URL http://entropymine.com/jason/bmpsuite/bmpsuite.zip)
+ 
+-oiio_add_tests (tiff-suite tiff-depths
+-    IMAGEDIR libtiffpic
+-    URL http://www.remotesensing.org/libtiff/images.html)
++#oiio_add_tests (tiff-suite tiff-depths
++#    IMAGEDIR libtiffpic
++#    URL http://www.remotesensing.org/libtiff/images.html)
+ 
+-oiio_add_tests (openexr-suite openexr-multires openexr-chroma
+-    IMAGEDIR openexr-images-1.5.0
+-    URL http://www.openexr.com/downloads.html)
++#oiio_add_tests (openexr-suite openexr-multires openexr-chroma
++#    IMAGEDIR openexr-images-1.5.0
++#    URL http://www.openexr.com/downloads.html)
+ 
+-oiio_add_tests (jpeg2000
+-    IMAGEDIR j2kp4files_v1_5
+-    URL http://www.crc.ricoh.com/~gormish/jpeg2000conformance/)
++#oiio_add_tests (jpeg2000
++#    IMAGEDIR j2kp4files_v1_5
++#    URL http://www.crc.ricoh.com/~gormish/jpeg2000conformance/)
+ 
+-oiio_add_tests (targa-tgautils
+-    IMAGEDIR TGAUTILS
+-    URL http://tgautils.inequation.org/)
++#oiio_add_tests (targa-tgautils
++#    IMAGEDIR TGAUTILS
++#    URL http://tgautils.inequation.org/)
+ 
+-oiio_add_tests (fits
+-    IMAGEDIR fits-images
+-    URL http://www.cv.nrao.edu/fits/data/tests/)
++#oiio_add_tests (fits
++#    IMAGEDIR fits-images
++#    URL http://www.cv.nrao.edu/fits/data/tests/)
+ 
+-oiio_add_tests (webp
+-    IMAGEDIR webp-images
+-    URL http://code.google.com/speed/webp/gallery.html)
++#oiio_add_tests (webp
++#    IMAGEDIR webp-images
++#    URL http://code.google.com/speed/webp/gallery.html)
+ 
+ #########################################################################
+ # Packaging
+@@ -234,7 +244,7 @@ if (WIN32)
+     set(CPACK_PACKAGE_EXECUTABLES "iv" "iv - Image Viewer")
+ #    set(CPACK_CREATE_DESCTOP_LINKS "iv" "iv - Image Viewer")
+     set(CPACK_NSIS_MODIFY_PATH ON)
+-    add_dll_files ()
++    #add_dll_files ()
+     include (InstallRequiredSystemLibraries)
+ endif ()
+ set (CPACK_SOURCE_PACKAGE_FILE_NAME OpenImageIO-${OIIO_VERSION_MAJOR}.${OIIO_VERSION_MINOR}.${OIIO_VERSION_PATCH}-source)
+diff --git a/src/libOpenImageIO/CMakeLists.txt b/src/libOpenImageIO/CMakeLists.txt
+index 8c162bc..d49c37a 100644
+--- a/src/libOpenImageIO/CMakeLists.txt
++++ b/src/libOpenImageIO/CMakeLists.txt
+@@ -207,6 +207,8 @@ oiio_install_targets (OpenImageIO)
+ if (NOT LINKSTATIC)
+     add_definitions (-DBOOST_TEST_DYN_LINK)
+     add_definitions (-DPTEX_EXPORTS)
++else ()
++    add_definitions (-DPTEX_STATIC)
+ endif ()
+ 
+ add_executable (imagebufalgo_test imagebufalgo_test.cpp)

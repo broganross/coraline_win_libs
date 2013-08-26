@@ -1,0 +1,12 @@
+
+Build Steps
+
+* OpenImageIO 1.0.x
+* In lib/windows/openimageio/oiio
+* Apply build.patch to this (manually, code changed a bit)
+* Open Visual Studio 2008 Command Prompt
+* cd into lib/windows/openimageio/oiio
+* ..\build.bat
+
+* Note we build with /MT or /MTd to be compatible with lib/windows/openexr.
+
